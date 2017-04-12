@@ -10,7 +10,7 @@ ext {
 	scala = '2.12'
 	scalaVersion = scala + '.1'
 	akkaVersion = '2.4.17'
-	akkaHttpVersion = '10.0.0'
+	akkaHttpVersion = '10.0.5'
 	testNGVersion = '6.11'
 	scalatestVersion = '3.0.1'
 	mockitoVersion = '1.10.19'
