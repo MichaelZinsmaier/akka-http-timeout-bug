@@ -1,3 +1,6 @@
+import java.util.concurrent.TimeUnit
+
+import scala.concurrent.duration.FiniteDuration
 import scala.util.Success
 
 import akka.actor.ActorSystem
@@ -10,15 +13,22 @@ import akka.http.scaladsl.model.ws.BinaryMessage
 import akka.http.scaladsl.model.ws.Message
 import akka.http.scaladsl.model.ws.TextMessage
 import akka.http.scaladsl.model.ws.UpgradeToWebSocket
+import akka.http.scaladsl.settings.ServerSettings
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
 
 object WsServer {
 
   def main(args: Array[String]): Unit = {
     new WsServer()
+  }
+
+  /** derive server settings from the default settings */
+  private def deriveServerSettings(idleTimeout: FiniteDuration)(implicit system: ActorSystem): ServerSettings = {
+    val default = ServerSettings(system)
+    val fastIdle = default.withIdleTimeout(idleTimeout)
+    default.withTimeouts(fastIdle)
   }
 }
 
@@ -52,7 +62,8 @@ class WsServer {
           Nil
       }
 
-  val bind = Http().bindAndHandleSync(requestHandler, "localhost", 9000)
+  val serverSettings = WsServer.deriveServerSettings(FiniteDuration(30, TimeUnit.SECONDS))
+  val bind = Http().bindAndHandleSync(requestHandler, "localhost", 9000, settings = serverSettings)
 
   bind.onComplete {
     case Success(_) => println("server bound and running")

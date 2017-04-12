@@ -10,6 +10,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.ws.Message
 import akka.http.scaladsl.model.ws.TextMessage
 import akka.http.scaladsl.model.ws.WebSocketRequest
+import akka.http.scaladsl.settings.ClientConnectionSettings
 import akka.stream.ActorMaterializer
 import akka.stream.ThrottleMode
 import akka.stream.scaladsl.Keep
@@ -20,6 +21,12 @@ object WsClient {
 
   def main(args: Array[String]): Unit = {
     new WsClient()
+  }
+
+  /** derive server settings from the default settings */
+  private def deriveClientSettings(idleTimeout: FiniteDuration)(implicit system: ActorSystem): ClientConnectionSettings = {
+    val default = ClientConnectionSettings(system)
+    default.withIdleTimeout(idleTimeout)
   }
 }
 
@@ -41,7 +48,8 @@ class WsClient {
     .throttle(1, FiniteDuration(10, TimeUnit.SECONDS), 1, ThrottleMode.shaping)
 
   // flow to use (note: not re-usable!)
-  val webSocketFlow = Http().webSocketClientFlow(WebSocketRequest("ws://localhost:9000/greeter"))
+  val clientSettings = WsClient.deriveClientSettings(FiniteDuration(30, TimeUnit.SECONDS))
+  val webSocketFlow = Http().webSocketClientFlow(WebSocketRequest("ws://localhost:9000/greeter"), settings = clientSettings)
 
   val (upgradeResponse, closed) =
     outgoing
