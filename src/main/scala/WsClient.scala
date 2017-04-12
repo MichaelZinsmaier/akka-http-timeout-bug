@@ -42,18 +42,25 @@ class WsClient {
       case message: TextMessage.Strict => println(message.text)
     }
 
-  // send this as a message over the WebSocket
+
   val outgoing = Source
     .repeat(TextMessage("marvin"))
     .throttle(1, FiniteDuration(10, TimeUnit.SECONDS), 1, ThrottleMode.shaping)
 
-  // flow to use (note: not re-usable!)
-  val clientSettings = WsClient.deriveClientSettings(FiniteDuration(30, TimeUnit.SECONDS))
+
+  // TODO client times out a connection after 10 seconds
+  val clientSettings = WsClient.deriveClientSettings(FiniteDuration(10, TimeUnit.SECONDS))
   val webSocketFlow = Http().webSocketClientFlow(WebSocketRequest("ws://localhost:9000/greeter"), settings = clientSettings)
 
   val (upgradeResponse, closed) =
     outgoing
       .viaMat(webSocketFlow)(Keep.right) // keep the materialized Future[WebSocketUpgradeResponse]
+      .recover {
+        case ex: Exception => {
+          println(s"Discovered Exception ${ex.getMessage}")
+          throw new Exception("Boom")
+        }
+      }
       .toMat(incoming)(Keep.both) // also keep the Future[Done]
       .run()
 

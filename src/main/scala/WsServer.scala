@@ -1,4 +1,5 @@
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Success
@@ -60,9 +61,15 @@ class WsServer {
         case bm: BinaryMessage =>
           bm.dataStream.runWith(Sink.ignore)
           Nil
+      }.recover {
+        case ex: Exception => {
+          println(s"Discovered Exception ${ex.getMessage}")
+          throw new Exception("Boom")
+        }
       }
 
-  val serverSettings = WsServer.deriveServerSettings(FiniteDuration(30, TimeUnit.SECONDS))
+  // TODO server times out a connection after 5 seconds
+  val serverSettings = WsServer.deriveServerSettings(FiniteDuration(5, TimeUnit.SECONDS))
   val bind = Http().bindAndHandleSync(requestHandler, "localhost", 9000, settings = serverSettings)
 
   bind.onComplete {
