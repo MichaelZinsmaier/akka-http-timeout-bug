@@ -55,7 +55,7 @@ class WsServer {
 
   val greeterWebSocketService =
     Flow[Message]
-      .via(new MyMonitorFlow("a"))
+      .via(new MyMonitorFlow("in"))
       .mapConcat {
         case tm: TextMessage.Strict => {
           val text = tm.text
@@ -66,7 +66,7 @@ class WsServer {
           bm.dataStream.runWith(Sink.ignore)
           Nil
       }
-      .via(new MyMonitorFlow("b"))
+      .via(new MyMonitorFlow("out"))
 
   // TODO server times out a connection after 5 seconds
   val serverSettings = WsServer.deriveServerSettings(FiniteDuration(5, TimeUnit.SECONDS))
