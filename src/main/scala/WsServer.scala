@@ -13,6 +13,7 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.ws.BinaryMessage
 import akka.http.scaladsl.model.ws.Message
 import akka.http.scaladsl.model.ws.TextMessage
+import akka.http.scaladsl.model.ws.TextMessage.Strict
 import akka.http.scaladsl.model.ws.UpgradeToWebSocket
 import akka.http.scaladsl.settings.ServerSettings
 import akka.stream.ActorMaterializer
@@ -61,12 +62,7 @@ class WsServer {
         case bm: BinaryMessage =>
           bm.dataStream.runWith(Sink.ignore)
           Nil
-      }.recover {
-        case ex: Exception => {
-          println(s"Discovered Exception ${ex.getMessage}")
-          throw new Exception("Boom")
-        }
-      }
+      }.via(new MyMonitorFlow())
 
   // TODO server times out a connection after 5 seconds
   val serverSettings = WsServer.deriveServerSettings(FiniteDuration(5, TimeUnit.SECONDS))

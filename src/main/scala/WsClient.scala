@@ -55,12 +55,7 @@ class WsClient {
   val (upgradeResponse, closed) =
     outgoing
       .viaMat(webSocketFlow)(Keep.right) // keep the materialized Future[WebSocketUpgradeResponse]
-      .recover {
-        case ex: Exception => {
-          println(s"Discovered Exception ${ex.getMessage}")
-          throw new Exception("Boom")
-        }
-      }
+      .viaMat(new MyMonitorFlow)(Keep.left)
       .toMat(incoming)(Keep.both) // also keep the Future[Done]
       .run()
 
