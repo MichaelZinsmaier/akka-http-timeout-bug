@@ -2,7 +2,10 @@
 Since version 10.0.1 Akka HTTP WebSocket server does not fail
 internal streams if a timeout happens.
 
-Checkout the two commits on the regression branch to reproduce.
+To reproduce checkout the two commits
+ - Regression in 10.0.1 and above
+ - Working in 10.0.0 and before
+
 this results in the following shortened log output:
 
 ### 10.0.1 - 10.0.5
