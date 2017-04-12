@@ -54,8 +54,9 @@ class WsClient {
 
   val (upgradeResponse, closed) =
     outgoing
+      .viaMat(new MyMonitorFlow("a"))(Keep.left)
       .viaMat(webSocketFlow)(Keep.right) // keep the materialized Future[WebSocketUpgradeResponse]
-      .viaMat(new MyMonitorFlow)(Keep.left)
+      .viaMat(new MyMonitorFlow("b"))(Keep.left)
       .toMat(incoming)(Keep.both) // also keep the Future[Done]
       .run()
 

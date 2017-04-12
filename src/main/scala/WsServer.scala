@@ -43,7 +43,9 @@ class WsServer {
   val requestHandler: HttpRequest => HttpResponse = {
     case req @ HttpRequest(HttpMethods.GET, Uri.Path("/greeter"), _, _, _) =>
       req.header[UpgradeToWebSocket] match {
-        case Some(upgrade) => upgrade.handleMessages(greeterWebSocketService)
+        case Some(upgrade) => {
+          upgrade.handleMessages(greeterWebSocketService)
+        }
         case None          => HttpResponse(400, entity = "Not a valid websocket request!")
       }
     case r: HttpRequest =>
@@ -53,6 +55,7 @@ class WsServer {
 
   val greeterWebSocketService =
     Flow[Message]
+      .via(new MyMonitorFlow("a"))
       .mapConcat {
         case tm: TextMessage.Strict => {
           val text = tm.text
@@ -62,7 +65,8 @@ class WsServer {
         case bm: BinaryMessage =>
           bm.dataStream.runWith(Sink.ignore)
           Nil
-      }.via(new MyMonitorFlow())
+      }
+      .via(new MyMonitorFlow("b"))
 
   // TODO server times out a connection after 5 seconds
   val serverSettings = WsServer.deriveServerSettings(FiniteDuration(5, TimeUnit.SECONDS))
