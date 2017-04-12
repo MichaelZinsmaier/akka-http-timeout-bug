@@ -65,7 +65,7 @@ class WsServer {
       }.via(new MyMonitorFlow())
 
   // TODO server times out a connection after 5 seconds
-  val serverSettings = WsServer.deriveServerSettings(FiniteDuration(5, TimeUnit.SECONDS))
+  val serverSettings = WsServer.deriveServerSettings(FiniteDuration(10, TimeUnit.SECONDS))
   val bind = Http().bindAndHandleSync(requestHandler, "localhost", 9000, settings = serverSettings)
 
   bind.onComplete {

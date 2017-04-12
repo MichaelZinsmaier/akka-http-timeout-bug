@@ -49,7 +49,7 @@ class WsClient {
 
 
   // TODO client times out a connection after 10 seconds
-  val clientSettings = WsClient.deriveClientSettings(FiniteDuration(10, TimeUnit.SECONDS))
+  val clientSettings = WsClient.deriveClientSettings(FiniteDuration(5, TimeUnit.SECONDS))
   val webSocketFlow = Http().webSocketClientFlow(WebSocketRequest("ws://localhost:9000/greeter"), settings = clientSettings)
 
   val (upgradeResponse, closed) =
