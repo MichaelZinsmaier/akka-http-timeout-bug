@@ -1,0 +1,56 @@
+apply plugin: 'scala'
+apply plugin: 'eclipse'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	// Library versions
+	scala = '2.12'
+	scalaVersion = scala + '.1'
+	akkaVersion = '2.4.17'
+	akkaHttpVersion = '10.0.1'
+	testNGVersion = '6.11'
+	scalatestVersion = '3.0.1'
+	mockitoVersion = '1.10.19'
+
+	// Settings
+	skipTests = false
+}
+
+dependencies {
+	compile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
+	compile group: 'com.typesafe.akka', name: 'akka-actor_' + scala, version: akkaVersion
+	compile group: 'com.typesafe.akka', name: 'akka-stream_' + scala, version: akkaVersion
+	compile group: 'com.typesafe.akka', name: 'akka-http-core_' + scala, version: akkaHttpVersion
+
+	testCompile group: 'org.testng', name: 'testng', version: testNGVersion
+	testCompile group: 'org.scalatest', name: 'scalatest_' + scala, version: scalatestVersion
+	testCompile group: 'com.typesafe.akka', name: 'akka-testkit_' + scala, version: akkaVersion
+	testCompile group: 'com.typesafe.akka', name: 'akka-stream-testkit_' + scala, version: akkaVersion
+	testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+}
+
+tasks.withType(ScalaCompile) {
+	scalaCompileOptions.additionalParameters = ["-feature"] // Displays feature warnings
+}
+
+test {
+	onlyIf {!skipTests}
+	testLogging {
+		exceptionFormat "full"
+		events "passed", "skipped", "failed"
+	}
+}
+
+tasks.withType(Test) {
+    //makes the standard streams (err and out) visible at console when running tests
+    testLogging.showStandardStreams = true
+
+    useTestNG() {
+		useDefaultListeners = true
+		suites 'src/test/resources/testng-unit.xml'
+	}
+}
+

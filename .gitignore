@@ -1,0 +1,40 @@
+########## file extensions (*.iml, ...)
+#
+#
+*.iml
+
+
+########## folders (build, bin, ...)
+#
+#
+bin/
+build/
+**/bin/
+**/build/
+
+
+########## specific folders  (root/.gradle, root/.idea, ...)  i.e. IDEA / Eclipse specific
+#
+#
+/.gradle/
+/.idea/
+/.settings/
+**/.settings/
+**/demo/
+**/test-output/
+
+
+
+# specific files  (root/.cache, root/.project, ....)  i.e. IDEA / Eclipse specific
+#
+#
+/gradle.properties
+/.cache
+/.classpath
+/.project
+**/.classpath
+**/.project
+**/.cache
+
+# do not include proxy settings
+gradle.properties
