@@ -20,6 +20,9 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Sink
 
+import reg.helpers.DelayCancellationFlow
+import reg.helpers.MyMonitorFlow
+
 object WsServer {
 
   def main(args: Array[String]): Unit = {
@@ -56,6 +59,7 @@ class WsServer {
   val greeterWebSocketService =
     Flow[Message]
       .via(new MyMonitorFlow("in"))
+      .via(new DelayCancellationFlow(FiniteDuration(60, TimeUnit.SECONDS)))
       .mapConcat {
         case tm: TextMessage.Strict => {
           val text = tm.text
@@ -66,9 +70,9 @@ class WsServer {
           bm.dataStream.runWith(Sink.ignore)
           Nil
       }
+      .via(new DelayCancellationFlow(FiniteDuration(60, TimeUnit.SECONDS)))
       .via(new MyMonitorFlow("out"))
 
-  // TODO server times out a connection after 5 seconds
   val serverSettings = WsServer.deriveServerSettings(FiniteDuration(5, TimeUnit.SECONDS))
   val bind = Http().bindAndHandleSync(requestHandler, "localhost", 9000, settings = serverSettings)
 

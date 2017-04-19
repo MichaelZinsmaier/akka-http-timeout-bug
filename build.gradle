@@ -25,11 +25,11 @@ dependencies {
 	compile group: 'com.typesafe.akka', name: 'akka-stream_' + scala, version: akkaVersion
 	compile group: 'com.typesafe.akka', name: 'akka-http-core_' + scala, version: akkaHttpVersion
 
-	testCompile group: 'org.testng', name: 'testng', version: testNGVersion
-	testCompile group: 'org.scalatest', name: 'scalatest_' + scala, version: scalatestVersion
-	testCompile group: 'com.typesafe.akka', name: 'akka-testkit_' + scala, version: akkaVersion
-	testCompile group: 'com.typesafe.akka', name: 'akka-stream-testkit_' + scala, version: akkaVersion
-	testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+	compile group: 'org.testng', name: 'testng', version: testNGVersion
+	compile group: 'org.scalatest', name: 'scalatest_' + scala, version: scalatestVersion
+	compile group: 'com.typesafe.akka', name: 'akka-testkit_' + scala, version: akkaVersion
+	compile group: 'com.typesafe.akka', name: 'akka-stream-testkit_' + scala, version: akkaVersion
+	compile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
 }
 
 tasks.withType(ScalaCompile) {

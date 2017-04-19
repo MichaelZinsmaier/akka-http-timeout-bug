@@ -1,3 +1,5 @@
+package reg.helpers
+
 import akka.stream.Attributes
 import akka.stream.FlowShape
 import akka.stream.Inlet
@@ -7,7 +9,7 @@ import akka.stream.stage.GraphStageLogic
 import akka.stream.stage.InHandler
 import akka.stream.stage.OutHandler
 
-private class MyMonitorFlow[T](name: String) extends GraphStage[FlowShape[T, T]] {
+class MyMonitorFlow[T](name: String) extends GraphStage[FlowShape[T, T]] {
   val in = Inlet[T]("FlowMonitor.in")
   val out = Outlet[T]("FlowMonitor.out")
   val shape = FlowShape.of(in, out)
