@@ -3,6 +3,14 @@
 - added DelayCancelationFlow, no effect
 - added an example with a BidiPipe that separates server side flows (IdleTimeout.scala runnable as Test)
 
+Images
+ - added two images that show a wireshark dump taken with our local test cases
+ 
+ In both cases a WS connection between a server and client has been created. Timeout happens after
+ two seconds. The test is "sleeping" for 5 seconds afterwards and then terminates. With 10.0.0 the RST
+ is send from the server side (5001) to the client after ~2 seconds. In 10.0.5 the RST is send by the
+ client after around 5 seconds when the test ends and connections break anyway.
+
 ### Summary
 Since version 10.0.1 Akka HTTP WebSocket server does not fail
 internal streams if a timeout happens.
