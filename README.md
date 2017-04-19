@@ -1,3 +1,8 @@
+## Update
+
+- added DelayCancelationFlow, no effect
+- added an example with a BidiPipe that separates server side flows (IdleTimeout.scala runnable as Test)
+
 ### Summary
 Since version 10.0.1 Akka HTTP WebSocket server does not fail
 internal streams if a timeout happens.
