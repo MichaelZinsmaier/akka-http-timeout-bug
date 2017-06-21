@@ -21,6 +21,30 @@ To reproduce checkout the two commits
 
 this results in the following shortened log output:
 
+### 10.0.8
+
+#### server: (in error still not propagated)
+```
+[DEBUG] [06/21/2017 08:49:00.392] [default-akka.actor.default-dispatcher-3] [akka://default/system/IO-TCP/selectors/$a/0] New connection accepted
+## M ## in TextMessage.Strict(marvin)
+## M ## out TextMessage.Strict(Hello marvin)
+[DEBUG] [06/21/2017 08:49:06.085] [default-akka.actor.default-dispatcher-2] [akka://default/user/StreamSupervisor-0/flow-1-0-unnamed] Aborting tcp connection to /127.0.0.1:60652 because of upstream failure: HTTP idle-timeout encountered, no bytes passed in the last 5 seconds. This is configurable by akka.http.[server|client].idle-timeout.
+## M ## out downstream finished
+## M ## in upstream finished
+```
+
+#### client: (best result so far)
+```
+## M ## out TextMessage.Strict(marvin)
+[DEBUG] [06/21/2017 08:49:00.394] [default-akka.actor.default-dispatcher-6] [akka://default/system/IO-TCP/selectors/$a/0] Connection established to [localhost:9000]
+## M ## in TextMessage.Strict(Hello marvin)
+
+[DEBUG] [06/21/2017 08:49:06.090] [default-akka.actor.default-dispatcher-4] [akka://default/system/IO-TCP/selectors/$a/0] Closing connection due to IO error java.io.IOException: Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+## M ## out downstream finished
+## M ## in upstream failure akka.stream.StreamTcpException: The connection closed with error: Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+```
+
+
 ### 10.0.1 - 10.0.5
 
 #### server:

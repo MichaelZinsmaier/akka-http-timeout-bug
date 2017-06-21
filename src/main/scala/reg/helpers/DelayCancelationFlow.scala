@@ -5,13 +5,22 @@ import scala.concurrent.duration.FiniteDuration
 
 import akka.actor.Cancellable
 import akka.stream.Attributes
-import akka.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
+import akka.stream.FlowShape
+import akka.stream.Inlet
+import akka.stream.Outlet
+import akka.stream.stage.GraphStage
 import akka.stream.stage.GraphStageLogic
 import akka.stream.stage.InHandler
 import akka.stream.stage.OutHandler
 import akka.stream.stage.StageLogging
 
-class DelayCancellationFlow[T](cancelAfter: Duration) extends SimpleLinearGraphStage[T] {
+class DelayCancellationFlow[T](cancelAfter: Duration) extends GraphStage[FlowShape[T, T]] {
+
+  val in = Inlet[T]("Map.in")
+  val out = Outlet[T]("Map.out")
+
+  override val shape = FlowShape.of(in, out)
+
   def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) with ScheduleSupport with InHandler with OutHandler with StageLogging {
     setHandlers(in, out, this)
 
