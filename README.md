@@ -21,7 +21,7 @@ To reproduce checkout the two commits
 
 this results in the following shortened log output:
 
-### 10.0.8
+### 10.0.8 / 10.0.10
 
 #### server: (in error still not propagated)
 ```
